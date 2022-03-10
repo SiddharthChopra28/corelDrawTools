@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <title>{% block title %}{% endblock %}</title>
+
+</head>
+<body>
+    <section id="page">
+        <header>
+            {% block head %}{% endblock %}
+        </header>
+        <nav>
+            <div class="nav-div" id="home-nav">
+                <a href="{{url_for('home')}}"><img class="nav-item" src="{{url_for('static', filename='home.svg')}}" alt="home"></a>
+            </div>
+
+            <div class="nav-div" id="bc-nav">
+                <a href="{{url_for('print_route')}}"><img class="nav-item" src="{{url_for('static', filename='barcode.svg')}}" alt="barcode"></a>
+            </div>
+
+            <div class="nav-div" id="print-nav"> 
+                <a href="{{url_for('print_route')}}"><img class="nav-item" src="{{url_for('static', filename='print.svg')}}" alt="print"></a>
+            </div>
+        </nav>
+        <main>
+            {% block content %}
+            {% endblock %}
+        
+        </main>
+
+    </section>
+      <div id="innerWidth">
+        <span onclick="history.back()" style="cursor: pointer;"><img src="{{url_for('static', filename='back.svg')}}" alt="back"></span>
+        <span onclick="location.reload()" style="cursor: pointer;"><img src="{{url_for('static', filename='refresh.svg')}}" alt="refresh"></span>
+
+      </div>   
+
+    
+</body>
+</html>
