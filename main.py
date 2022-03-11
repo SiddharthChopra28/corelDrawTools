@@ -1,17 +1,22 @@
-from server import app
+from turtle import circle
+from server import app as flaskapp
 from commonUtils import log
 import sys
 from renderer import makeWindow
 from threading import Thread
 import requests
+import pygame
 import time
+import os
+
 
 finalPort = 1234
+
 
 class corelMacroGen:
     
     finalport = None
-
+    
     def run_server(self, port, alt_port, n):
 
         
@@ -29,7 +34,7 @@ class corelMacroGen:
         except ConnectionRefusedError:
             print('ConnRefErr')
             if not serverStatus:
-                app.run(port=port)
+                flaskapp.run(port=port)
                 self.finalport = port
                 print('port set')
                 return
@@ -40,7 +45,7 @@ class corelMacroGen:
             if not serverStatus:
                 self.finalport = port
                 print('port set')
-                app.run(port=port)
+                flaskapp.run(port=port)
 
                 return
             
@@ -83,15 +88,70 @@ class corelMacroGen:
             log(str(e))
         
 
+class LoadingScreen:
+    def __init__(self):
+        self.exit_ = False
+                        
+        self.port = 5322
+        self.alt_port = 1209
 
-port = 5322
-alt_port = 1209
+                        
+        self.WIDTH = 400
+        self.HEIGHT = 300
+        self.FPS = 25
+        
+        pygame.init()
 
-mainApp = corelMacroGen()
+        self.clock = pygame.time.Clock()
+        
+        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
+        pygame.display.set_caption("CorelDraw Macro Tools")
+        
+        self.frames = os.listdir('./loadingscreen')
+        
+        self.no_frames = len(self.frames)
+        
+        self.runApp()
+        
+    def runApp(self):
+        self.mainApp = corelMacroGen()
+        
+        Thread(target=lambda: self.mainApp.run_server(self.port, self.alt_port, n=1), daemon=True).start()
 
-server = Thread(target=lambda: mainApp.run_server(port, alt_port, n=1), daemon=True).start()
 
-time.sleep(1)
 
-mainApp.run_renderer()
+    def bomb(self):
+        time.sleep(10)
+        self.exit_ = True
+    
+    
+    def loadingScreen(self):
+        bomb = Thread(target=self.bomb , daemon=True).start()
 
+        curr_frame = 0
+        while not self.exit_:
+            self.clock.tick(self.FPS)
+            if curr_frame == self.no_frames:
+                curr_frame = 0
+                
+                
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    
+            self.screen.blit(pygame.image.load(f'./loadingscreen/{self.frames[curr_frame]}'), (0, 0))
+            
+            curr_frame+=1
+            pygame.display.update()       
+
+
+
+
+try:
+    ls = LoadingScreen()
+    ls.loadingScreen()
+except:
+    pass
+
+pygame.quit()
+ls.mainApp.run_renderer()

@@ -3,14 +3,14 @@ import pandas as pd
 import sys
 
 if sys.platform == 'win32':
-    LOG_FILE = os.path.join(os.path.join(os.path.join(os.environ['USERNAME']), 'Desktop'), 'printCodeGenLogs.txt')
+    LOG_FILE = os.path.join('C:\\Users\\', os.environ['USERNAME'], 'Desktop', 'printCodeGenLogs.txt')
 else:
-    LOG_FILE = os.path.join(os.path.join(os.path.join(os.environ['HOME']), 'Desktop'), 'printCodeGenLogs.txt')
+    LOG_FILE = os.path.join(os.environ['HOME'], 'Desktop', 'printCodeGenLogs.txt')
 
 
 
 def log(msg):
-    with open(LOG_FILE, 'a') as f:
+    with open(LOG_FILE, 'a+') as f:
         log_str = f'{datetime.datetime.now()} - {msg}\n'
         f.write(log_str + '\n\n')
 
